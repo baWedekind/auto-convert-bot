@@ -1,0 +1,14 @@
+---
+version: "2.0"
+
+services:
+  postgres:
+    image: postgres:12.2
+    environment:
+      POSTGRES_DB: "auto-convert-bot"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "pass"
+    ports:
+      - 50432:5432
+#    volumes:
+#      - ./postgres-data:/var/lib/postgresql/data
