@@ -68,14 +68,27 @@ pub struct AutoConvertBot {
 impl AutoConvertBot {
     /// Bot Init and Constructor.
     ///
-    /// # panics
-    /// Requires `TELEGRAM_BOT_TOKEN` and `DATABASE_URL` to be set as environment variables.
-    /// `DATABASE_URL` may be set in the `.env` file, but `TELEGRAM_BOT_TOKEN` is SECRET!
+    /// ## panics
+    /// Requires the following environment variables to be set:
+    ///  - `TELEGRAM_BOT_TOKEN`
+    ///  - `DATABASE_HOST`
+    ///  - `DATABASE_PORT`
+    ///  - `DATABASE_USER`
+    ///  - `DATABASE_PASS`
+    ///  - `DATABASE_DB`
+    ///
+    /// everything except `TELEGRAM_BOT_TOKEN` may be set in the `.env` file, the token is SECRET!
     /// Exposing the bot token would give anyone permission to run any code over `@auto_convert_bot`
     pub fn bot_setup() -> Self {
         dotenv().ok();
 
-        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        let database_host = env::var("DATABASE_HOST").expect("DATABASE_HOST must be set");
+        let database_port = env::var("DATABASE_PORT").expect("DATABASE_PORT must be set");
+        let database_user = env::var("DATABASE_USER").expect("DATABASE_USER must be set");
+        let database_pass = env::var("DATABASE_PASS").expect("DATABASE_PASSWORD must be set");
+        let database_db = env::var("DATABASE_DB").expect("DATABASE_DB must be set");
+
+        let database_url = format!("postgres://{}:{}@{}:{}/{}", database_user, database_pass, database_host, database_port, database_db);
         let conn = PgConnection::establish(&database_url)
             .expect(&format!("Error connecting to {}", database_url));
 
